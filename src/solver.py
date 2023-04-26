@@ -3,8 +3,9 @@ import numpy as np
 import math
 from random import choice
 import statistics
-from sudokuGui import SudokuGui
+from sudokuGui import *
 import pygame
+from sudoku import Sudoku
 
 
 def FixSudokuValues(fixed_sudoku):
@@ -59,7 +60,7 @@ def SumOfOneBlock(sudoku, oneBlock):
 
 
 def TwoRandomBoxesWithinBlock(fixedSudoku, block):
-    while (1):
+    while True:
         firstBox = random.choice(block)
         secondBox = choice([box for box in block if box is not firstBox])
 
@@ -78,8 +79,6 @@ def FlipBoxes(sudoku, boxesToFlip):
 def ProposedState(sudoku, fixedSudoku, listOfBlocks):
     randomBlock = random.choice(listOfBlocks)
 
-    if SumOfOneBlock(fixedSudoku, randomBlock) > 6:
-        return (sudoku, 1, 1)
     boxesToFlip = TwoRandomBoxesWithinBlock(fixedSudoku, randomBlock)
     proposedSudoku = FlipBoxes(sudoku, boxesToFlip)
     return ([proposedSudoku, boxesToFlip])
@@ -125,15 +124,16 @@ def CalculateInitialSigma(sudoku, fixedSudoku, listOfBlocks):
 
 
 def solveSudoku(sudoku):
+
     f = open("demofile2.txt", "a")
     solutionFound = 0
     while (solutionFound == 0):
+        print("start")
         decreaseFactor = 0.99
         stuckCount = 0
         fixedSudoku = np.copy(sudoku)
 
         FixSudokuValues(fixedSudoku)
-
         listOfBlocks = CreateList3x3Blocks()
         tmpSudoku = RandomlyFill3x3Blocks(sudoku, listOfBlocks)
         sigma = CalculateInitialSigma(sudoku, fixedSudoku, listOfBlocks)
@@ -143,6 +143,7 @@ def solveSudoku(sudoku):
             solutionFound = 1
 
         while solutionFound == 0:
+
             previousScore = score
             for i in range(0, itterations):
                 newState = ChooseNewState(tmpSudoku, fixedSudoku, listOfBlocks, sigma)
@@ -166,33 +167,40 @@ def solveSudoku(sudoku):
             if (stuckCount > 80):
                 sigma += 2
             if (CalculateNumberOfErrors(tmpSudoku) == 0):
+
                 break
     f.close()
     return (tmpSudoku)
+def generate_new(gen):
+    x = np.array(gen.difficulty(0.5).board)
+    return np.where(x == None, 0, x)
+
+
 
 
 if __name__ == "__main__":
 
-    def_grid = np.array([[0, 2, 4, 0, 0, 7, 0, 0, 0],
-                         [6, 0, 0, 0, 0, 0, 0, 0, 0],
-                         [0, 0, 3, 6, 8, 0, 4, 1, 5],
-                         [4, 3, 1, 0, 0, 5, 0, 0, 0],
-                         [5, 0, 0, 0, 0, 0, 0, 3, 2],
-                         [7, 9, 0, 0, 0, 0, 0, 6, 0],
-                         [2, 0, 9, 7, 1, 0, 8, 0, 0],
-                         [0, 4, 0, 0, 9, 3, 0, 0, 0],
-                         [3, 1, 0, 0, 0, 4, 7, 5, 0]])
+    screen = pygame.display.set_mode((500, 600))
+    sudoku_gen = Sudoku(3)
+    # def_grid = generate_new(sudoku_gen)
+    def_grid = np.array([
+        [0, 0, 0, 0, 0, 0, 0, 5, 6],
+        [5, 1, 3, 6, 0, 7, 8, 2, 4],
+        [0, 0, 0, 0, 5, 0, 3, 9, 1],
+        [8, 3, 0, 0, 0, 6, 0, 7, 5],
+        [9, 0, 6, 5, 7, 4, 1, 0, 0],
+        [7, 4, 0, 0, 3, 0, 0, 6, 0],
+        [6, 0, 4, 0, 1, 0, 9, 0, 2],
+        [0, 5, 0, 0, 0, 0, 6, 1, 7],
+        [0, 0, 8, 0, 6, 2, 0, 0, 0]])
+    grid = np.copy(def_grid)
 
-    grid = np.array(np.copy(def_grid))
-
-    gui = SudokuGui()
 
     run = True
     rs = 0
-    error = 0
     # The loop thats keep the window running
     while run:
-        gui.screen.fill((255, 255, 255))
+        screen.fill((255, 255, 255))
         # Loop through the events stored in event.get()
         for event in pygame.event.get():
             # Quit the game window
@@ -203,15 +211,19 @@ if __name__ == "__main__":
                 # If D is pressed reset the board to default
                 if event.key == pygame.K_d:
                     rs = 0
-                    grid = def_grid
+                    grid = np.copy(def_grid)
+                if event.key == pygame.K_r:
+                    def_grid = generate_new(sudoku_gen)
+                    grid = np.copy(def_grid)
+                    rs == 0
                 if event.key == pygame.K_s:
                     grid = solveSudoku(grid)
                     rs == 1
         if rs == 1:
-            gui.result()
+            result(screen)
 
-        gui.draw(grid, def_grid)
-        gui.instruction()
+        draw(grid, def_grid, screen)
+        instruction(screen)
         # Update window
         pygame.display.update()
 
