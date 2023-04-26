@@ -1,11 +1,13 @@
-import random
-import numpy as np
 import math
-from random import choice
+import random
 import statistics
-from sudokuGui import *
+from random import choice
+
+import numpy as np
 import pygame
 from sudoku import Sudoku
+
+from sudokuGui import *
 
 
 def FixSudokuValues(fixed_sudoku):
@@ -60,12 +62,15 @@ def SumOfOneBlock(sudoku, oneBlock):
 
 
 def TwoRandomBoxesWithinBlock(fixedSudoku, block):
-    while True:
+    for i in range(0, 25):
         firstBox = random.choice(block)
         secondBox = choice([box for box in block if box is not firstBox])
 
+
         if fixedSudoku[firstBox[0], firstBox[1]] != 1 and fixedSudoku[secondBox[0], secondBox[1]] != 1:
             return ([firstBox, secondBox])
+        
+    return([firstBox, firstBox])
 
 
 def FlipBoxes(sudoku, boxesToFlip):
