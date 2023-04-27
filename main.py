@@ -90,22 +90,22 @@ if __name__ == "__main__":
                 #key R - reset
                 if event.key == pygame.K_r:
                     rs = 0
-                    grid = np.copy(def_grid)
+                    sudokuSolver.grid = np.copy(sudokuSolver.def_grid)
                 #key N - new game
                 if event.key == pygame.K_n:
-                    def_grid = generate_new(sudoku_gen)
-                    grid = np.copy(def_grid)
+                    sudokuSolver.def_grid = generate_new(sudoku_gen)
+                    sudokuSolver.grid = np.copy(sudokuSolver.def_grid)
                     rs = 0
                 #key S - solve
                 if event.key == pygame.K_s:
-                    grid = sudokuSolver.solveSudoku(grid)
+                    sudokuSolver.grid = sudokuSolver.solveSudoku()
                     rs = 1
         if rs == 1:
             result(screen)
-        else:
+        else: 
             instruction(screen)
 
-        draw(grid,def_grid,screen)
+        draw(sudokuSolver.grid,sudokuSolver.def_grid,screen)
 
         # update window
         pygame.display.update()

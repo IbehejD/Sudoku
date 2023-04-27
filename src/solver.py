@@ -127,7 +127,7 @@ class Solver:
         return (statistics.pstdev(listOfDifferences))
 
 
-    def solveSudoku(self,grid):
+    def solveSudoku(self):
 
         solutionFound = 0
         while (solutionFound == 0):
@@ -135,8 +135,8 @@ class Solver:
             decreaseFactor = 0.99
             stuckCount = 0
             listOfBlocks = self.CreateList3x3Blocks()
-            tmp_grid = self.RandomlyFill3x3Blocks(grid, listOfBlocks)
-            sigma = self.CalculateInitialSigma(grid, listOfBlocks)
+            tmp_grid = self.RandomlyFill3x3Blocks(self.grid, listOfBlocks)
+            sigma = self.CalculateInitialSigma(self.grid, listOfBlocks)
             score = self.CalculateNumberOfErrors(tmp_grid)
             itterations = self.ChooseNumberOfItterations()
             if score <= 0:
