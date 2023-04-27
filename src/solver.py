@@ -8,15 +8,6 @@ import pygame
 from sudoku import Sudoku
 
 
-def FixSudokuValues(fixed_sudoku):
-    for i in range(0, 9):
-        for j in range(0, 9):
-            if fixed_sudoku[i, j] != 0:
-                fixed_sudoku[i, j] = 1
-
-    return (fixed_sudoku)
-
-
 # Cost Function
 def CalculateNumberOfErrors(sudoku):
     numberOfErrors = 0
@@ -59,12 +50,12 @@ def SumOfOneBlock(sudoku, oneBlock):
     return (finalSum)
 
 
-def TwoRandomBoxesWithinBlock(fixedSudoku, block):
+def TwoRandomBoxesWithinBlock(def_grid, block):
     while True:
         firstBox = random.choice(block)
         secondBox = choice([box for box in block if box is not firstBox])
 
-        if fixedSudoku[firstBox[0], firstBox[1]] != 1 and fixedSudoku[secondBox[0], secondBox[1]] != 1:
+        if not(is_def(firstBox, def_grid)) and not(is_def(secondBox, def_grid)):
             return ([firstBox, secondBox])
 
 
@@ -76,28 +67,30 @@ def FlipBoxes(sudoku, boxesToFlip):
     return (proposedSudoku)
 
 
-def ProposedState(sudoku, fixedSudoku, listOfBlocks):
+def ProposedState(sudoku, def_grid, listOfBlocks):
     correct = True
 
     while True:
         randomBlock = random.choice(listOfBlocks)
-        if number_of_def(fixedSudoku, randomBlock) < 8:
+        if number_of_def(def_grid, randomBlock) < 8:
             break
 
-    boxesToFlip = TwoRandomBoxesWithinBlock(fixedSudoku, randomBlock)
+    boxesToFlip = TwoRandomBoxesWithinBlock(def_grid, randomBlock)
     proposedSudoku = FlipBoxes(sudoku, boxesToFlip)
     return ([proposedSudoku, boxesToFlip])
 
-def number_of_def(fixedSudoku, randomBlock):
+def number_of_def(def_grid, randomBlock):
     i = 0
     for x in randomBlock:
-        if fixedSudoku[x[0], x[1]] == 1:
+        if is_def(x, def_grid):
             i += 1
     print(i)
     return i
+def is_def(indexes, def_grid):
+    return bool(def_grid[indexes[0]][indexes[1]])
 
-def ChooseNewState(currentSudoku, fixedSudoku, listOfBlocks, sigma):
-    proposal = ProposedState(currentSudoku, fixedSudoku, listOfBlocks)
+def ChooseNewState(currentSudoku, def_grid, listOfBlocks, sigma):
+    proposal = ProposedState(currentSudoku, def_grid, listOfBlocks)
     newSudoku = proposal[0]
     boxesToCheck = proposal[1]
     currentCost = CalculateNumberOfErrorsRowColumn(boxesToCheck[0][0], boxesToCheck[0][1],
@@ -117,40 +110,36 @@ def ChooseNewState(currentSudoku, fixedSudoku, listOfBlocks, sigma):
     return ([currentSudoku, 0])
 
 
-def ChooseNumberOfItterations(fixed_sudoku):
+def ChooseNumberOfItterations(def_grid):
     numberOfItterations = 0
     for i in range(0, 9):
         for j in range(0, 9):
-            if fixed_sudoku[i, j] != 0:
+            if is_def([i, j], def_grid):
                 numberOfItterations += 1
     return numberOfItterations
 
 
-def CalculateInitialSigma(sudoku, fixedSudoku, listOfBlocks):
+def CalculateInitialSigma(sudoku, def_grid, listOfBlocks):
     listOfDifferences = []
     tmpSudoku = sudoku
     for i in range(1, 10):
-        tmpSudoku = ProposedState(tmpSudoku, fixedSudoku, listOfBlocks)[0]
+        tmpSudoku = ProposedState(tmpSudoku, def_grid, listOfBlocks)[0]
         listOfDifferences.append(CalculateNumberOfErrors(tmpSudoku))
     return (statistics.pstdev(listOfDifferences))
 
 
-def solveSudoku(sudoku):
+def solveSudoku(sudoku, def_grid):
 
-    f = open("demofile2.txt", "a")
     solutionFound = 0
     while (solutionFound == 0):
         print("start")
         decreaseFactor = 0.99
         stuckCount = 0
-        fixedSudoku = np.copy(sudoku)
-
-        FixSudokuValues(fixedSudoku)
         listOfBlocks = CreateList3x3Blocks()
         tmpSudoku = RandomlyFill3x3Blocks(sudoku, listOfBlocks)
-        sigma = CalculateInitialSigma(sudoku, fixedSudoku, listOfBlocks)
+        sigma = CalculateInitialSigma(sudoku, def_grid, listOfBlocks)
         score = CalculateNumberOfErrors(tmpSudoku)
-        itterations = ChooseNumberOfItterations(fixedSudoku)
+        itterations = ChooseNumberOfItterations(def_grid)
         if score <= 0:
             solutionFound = 1
 
@@ -158,12 +147,11 @@ def solveSudoku(sudoku):
 
             previousScore = score
             for i in range(0, itterations):
-                newState = ChooseNewState(tmpSudoku, fixedSudoku, listOfBlocks, sigma)
+                newState = ChooseNewState(tmpSudoku, def_grid, listOfBlocks, sigma)
                 tmpSudoku = newState[0]
                 scoreDiff = newState[1]
                 score += scoreDiff
                 print(score)
-                f.write(str(score) + '\n')
                 if score <= 0:
                     solutionFound = 1
                     break
@@ -181,7 +169,6 @@ def solveSudoku(sudoku):
             if (CalculateNumberOfErrors(tmpSudoku) == 0):
 
                 break
-    f.close()
     return (tmpSudoku)
 def generate_new(gen):
     x = np.array(gen.difficulty(0.5).board)
@@ -229,7 +216,7 @@ if __name__ == "__main__":
                     grid = np.copy(def_grid)
                     rs == 0
                 if event.key == pygame.K_s:
-                    grid = solveSudoku(grid)
+                    grid = solveSudoku(grid, def_grid)
                     rs == 1
         if rs == 1:
             result(screen)

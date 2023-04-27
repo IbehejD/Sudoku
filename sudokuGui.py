@@ -43,8 +43,8 @@ def draw(grid, def_grid, screen):
 # Display instruction for the game
 
 def instruction(screen):
-    text1 = FONT2.render("PRESS D TO RESET TO DEFAULT / R TO EMPTY", 1, (0, 0, 0))
-    text2 = FONT2.render("ENTER VALUES AND PRESS ENTER TO VISUALIZE", 1, (0, 0, 0))
+    text1 = FONT2.render("PRESS D TO RESET TO DEFAULT", 1, (0, 0, 0))
+    text2 = FONT2.render("R TO GENERATE NEW SUDOKU", 1, (0, 0, 0))
     screen.blit(text1, (20, 520))
     screen.blit(text2, (20, 540))
 
