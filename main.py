@@ -1,6 +1,6 @@
 import pygame
 import numpy as np
-from src.solver import Solver
+from src.sudokuSolver import SudokuSolver
 from sudoku import Sudoku as SudokuGen
 
 # inicialisation of font
@@ -66,7 +66,7 @@ if __name__ == "__main__":
 
  
     def_grid = generate_new(sudoku_gen)
-    sudokuSolver = Solver(def_grid)
+    sudokuSolver = SudokuSolver(def_grid)
 
 
     #run condition variable
