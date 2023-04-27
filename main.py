@@ -1,4 +1,6 @@
 import pygame
+from src.solver import *
+from sudoku import Sudoku
 
 # initialise the pygame font
 pygame.font.init()
@@ -53,3 +55,45 @@ def instruction(screen):
 def result(screen):
     text1 = FONT1.render("FINISHED PRESS R or D", 1, (0, 0, 0))
     screen.blit(text1, (20, 570))
+
+if __name__ == "__main__":
+
+    screen = pygame.display.set_mode((500, 600))
+    sudoku_gen = Sudoku(3)
+    def_grid = generate_new(sudoku_gen)
+    grid = np.copy(def_grid)
+
+
+    run = True
+    rs = 0
+    # The loop thats keep the window running
+    while run:
+        screen.fill((255, 255, 255))
+        # Loop through the events stored in event.get()
+        for event in pygame.event.get():
+            # Quit the game window
+            if event.type == pygame.QUIT:
+                run = False
+            # Get the number to be inserted if key pressed
+            if event.type == pygame.KEYDOWN:
+                # If D is pressed reset the board to default
+                if event.key == pygame.K_d:
+                    rs = 0
+                    grid = np.copy(def_grid)
+                if event.key == pygame.K_r:
+                    def_grid = generate_new(sudoku_gen)
+                    grid = np.copy(def_grid)
+                    rs == 0
+                if event.key == pygame.K_s:
+                    grid = solveSudoku(grid, def_grid)
+                    rs == 1
+        if rs == 1:
+            result(screen)
+
+        draw(grid, def_grid, screen)
+        instruction(screen)
+        # Update window
+        pygame.display.update()
+
+    # Quit pygame window
+    pygame.quit()

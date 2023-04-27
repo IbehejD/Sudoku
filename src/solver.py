@@ -3,9 +3,7 @@ import numpy as np
 import math
 from random import choice
 import statistics
-from sudokuGui import *
-import pygame
-from sudoku import Sudoku
+
 
 
 # Cost Function
@@ -177,54 +175,4 @@ def generate_new(gen):
 
 
 
-if __name__ == "__main__":
 
-    screen = pygame.display.set_mode((500, 600))
-    sudoku_gen = Sudoku(3)
-    # def_grid = generate_new(sudoku_gen)
-    def_grid = np.array([
-        [0, 0, 0, 0, 0, 0, 0, 5, 6],
-        [5, 1, 3, 6, 0, 7, 8, 2, 4],
-        [0, 0, 0, 0, 5, 0, 3, 9, 1],
-        [8, 3, 0, 0, 0, 6, 0, 7, 5],
-        [9, 0, 6, 5, 7, 4, 1, 0, 0],
-        [7, 4, 0, 0, 3, 0, 0, 6, 0],
-        [6, 0, 4, 0, 1, 0, 9, 0, 2],
-        [0, 5, 0, 0, 0, 0, 6, 1, 7],
-        [0, 0, 8, 0, 6, 2, 0, 0, 0]])
-    grid = np.copy(def_grid)
-
-
-    run = True
-    rs = 0
-    # The loop thats keep the window running
-    while run:
-        screen.fill((255, 255, 255))
-        # Loop through the events stored in event.get()
-        for event in pygame.event.get():
-            # Quit the game window
-            if event.type == pygame.QUIT:
-                run = False
-            # Get the number to be inserted if key pressed
-            if event.type == pygame.KEYDOWN:
-                # If D is pressed reset the board to default
-                if event.key == pygame.K_d:
-                    rs = 0
-                    grid = np.copy(def_grid)
-                if event.key == pygame.K_r:
-                    def_grid = generate_new(sudoku_gen)
-                    grid = np.copy(def_grid)
-                    rs == 0
-                if event.key == pygame.K_s:
-                    grid = solveSudoku(grid, def_grid)
-                    rs == 1
-        if rs == 1:
-            result(screen)
-
-        draw(grid, def_grid, screen)
-        instruction(screen)
-        # Update window
-        pygame.display.update()
-
-    # Quit pygame window
-    pygame.quit()
