@@ -1,6 +1,11 @@
 import pygame
+<<<<<<< HEAD
+from src.solver import Solver
+from sudoku import Sudoku
+=======
 from src.sudokuSolver import SudokuSolver
 from sudoku import Sudoku as SudokuGen
+>>>>>>> e4ffa98a969ee6e38088112687992239b0c8941d
 import numpy as np
 
 # inicialisation of font
@@ -51,6 +56,13 @@ def instruction(screen):
     screen.blit(text2, (20, 540))
 #result banner
 def result(screen):
+<<<<<<< HEAD
+    text1 = FONT1.render("FINISHED PRESS R or D", 1, (0, 0, 0))
+    screen.blit(text1, (20, 570))
+def generate_new(gen):
+    x = np.array(gen.difficulty(0.5).board)
+    return np.where(x == None, 0, x)
+=======
     text1 = FONT2.render("FINISHED PRESS N or R", 1, (0, 0, 0))
     screen.blit(text1, (20, 520))
 #function converting format of generated sudoku
@@ -58,16 +70,26 @@ def generate_new(gen):
     x = np.array(gen.difficulty(0.5).board)
     return np.where(x == None, 0, x)
 
+>>>>>>> e4ffa98a969ee6e38088112687992239b0c8941d
 
 if __name__ == "__main__":
     #setting screen
     screen = pygame.display.set_mode((500, 600))
+<<<<<<< HEAD
+    sudoku_gen = Sudoku(3)
+
+    sudokuSolver = Solver()
+    def_grid = generate_new(sudoku_gen)
+    grid = np.copy(def_grid)
+
+=======
     #inicializing sudoku generator
     sudoku_gen = SudokuGen(3)
     #initial grid 
     initial_grid = generate_new(sudoku_gen)
     #inicializing sudoku solver
     sudokuSolver = SudokuSolver(initial_grid)
+>>>>>>> e4ffa98a969ee6e38088112687992239b0c8941d
 
     #run condition variable
     run = True
@@ -97,12 +119,17 @@ if __name__ == "__main__":
                     rs = 0
                 #key S - solve
                 if event.key == pygame.K_s:
+<<<<<<< HEAD
+                    grid = sudokuSolver.solveSudoku(grid, def_grid)
+                    rs == 1
+=======
                     sudokuSolver.grid = sudokuSolver.solve()
                     rs = 1
         #redraw sudoku
         draw(sudokuSolver.grid, sudokuSolver.def_grid, screen)
 
         #banner switch
+>>>>>>> e4ffa98a969ee6e38088112687992239b0c8941d
         if rs == 1:
             result(screen)
         else:
