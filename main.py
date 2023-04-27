@@ -1,7 +1,5 @@
 import pygame
 from src.solver import Solver
-from sudoku import Sudoku
-from src.sudokuSolver import SudokuSolver
 from sudoku import Sudoku as SudokuGen
 import numpy as np
 
@@ -64,7 +62,7 @@ def generate_new(gen):
 if __name__ == "__main__":
     #setting screen
     screen = pygame.display.set_mode((500, 600))
-    sudoku_gen = Sudoku(3)
+    sudoku_gen = SudokuGen(3)
 
     sudokuSolver = Solver()
     def_grid = generate_new(sudoku_gen)
@@ -91,11 +89,11 @@ if __name__ == "__main__":
                 #key R - reset
                 if event.key == pygame.K_r:
                     rs = 0
-                    sudokuSolver.grid = np.copy(sudokuSolver.def_grid)
+                    grid = np.copy(def_grid)
                 #key N - new game
                 if event.key == pygame.K_n:
-                    sudokuSolver.def_grid = generate_new(sudoku_gen)
-                    sudokuSolver.grid = np.copy(sudokuSolver.def_grid)
+                    def_grid = generate_new(sudoku_gen)
+                    grid = np.copy(def_grid)
                     rs = 0
                 #key S - solve
                 if event.key == pygame.K_s:
