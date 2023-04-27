@@ -77,12 +77,24 @@ def FlipBoxes(sudoku, boxesToFlip):
 
 
 def ProposedState(sudoku, fixedSudoku, listOfBlocks):
-    randomBlock = random.choice(listOfBlocks)
+    correct = True
+
+    while True:
+        randomBlock = random.choice(listOfBlocks)
+        if number_of_def(fixedSudoku, randomBlock) < 8:
+            break
 
     boxesToFlip = TwoRandomBoxesWithinBlock(fixedSudoku, randomBlock)
     proposedSudoku = FlipBoxes(sudoku, boxesToFlip)
     return ([proposedSudoku, boxesToFlip])
 
+def number_of_def(fixedSudoku, randomBlock):
+    i = 0
+    for x in randomBlock:
+        if fixedSudoku[x[0], x[1]] == 1:
+            i += 1
+    print(i)
+    return i
 
 def ChooseNewState(currentSudoku, fixedSudoku, listOfBlocks, sigma):
     proposal = ProposedState(currentSudoku, fixedSudoku, listOfBlocks)
