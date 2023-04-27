@@ -1,7 +1,7 @@
 import pygame
+import numpy as np
 from src.solver import Solver
 from sudoku import Sudoku as SudokuGen
-import numpy as np
 
 # inicialisation of font
 pygame.font.init()
@@ -66,7 +66,6 @@ if __name__ == "__main__":
 
  
     def_grid = generate_new(sudoku_gen)
-    grid = np.copy(def_grid)
     sudokuSolver = Solver(def_grid)
 
 
@@ -98,7 +97,7 @@ if __name__ == "__main__":
                     rs = 0
                 #key S - solve
                 if event.key == pygame.K_s:
-                    sudokuSolver.grid = sudokuSolver.solveSudoku()
+                    sudokuSolver.grid = sudokuSolver.solve()
                     rs = 1
         if rs == 1:
             result(screen)
