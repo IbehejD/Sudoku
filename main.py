@@ -64,9 +64,10 @@ if __name__ == "__main__":
     screen = pygame.display.set_mode((500, 600))
     sudoku_gen = SudokuGen(3)
 
-    sudokuSolver = Solver()
+ 
     def_grid = generate_new(sudoku_gen)
     grid = np.copy(def_grid)
+    sudokuSolver = Solver(def_grid)
 
 
     #run condition variable
@@ -97,7 +98,7 @@ if __name__ == "__main__":
                     rs = 0
                 #key S - solve
                 if event.key == pygame.K_s:
-                    grid = sudokuSolver.solveSudoku(grid, def_grid)
+                    grid = sudokuSolver.solveSudoku(grid)
                     rs = 1
         if rs == 1:
             result(screen)

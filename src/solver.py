@@ -6,6 +6,10 @@ import statistics
 
 
 class Solver:
+    def __init__(self,def_grid):
+        self.def_grid= def_grid
+        self.grid = np.copy(self.def_grid)
+
     # Cost Function
     def CalculateNumberOfErrors(self,sudoku):
         numberOfErrors = 0
@@ -48,12 +52,12 @@ class Solver:
         return (finalSum)
 
 
-    def TwoRandomBoxesWithinBlock(self, def_grid, block):
+    def TwoRandomBoxesWithinBlock(self,  block):
         while True:
             firstBox = random.choice(block)
             secondBox = choice([box for box in block if box is not firstBox])
 
-            if not(self.is_def(firstBox, def_grid)) and not(self.is_def(secondBox, def_grid)):
+            if not(self.is_def(firstBox, )) and not(self.is_def(secondBox, )):
                 return ([firstBox, secondBox])
 
 
@@ -65,30 +69,30 @@ class Solver:
         return (proposedSudoku)
 
 
-    def ProposedState(self,sudoku, def_grid, listOfBlocks):
+    def ProposedState(self,sudoku,  listOfBlocks):
         correct = True
 
         while True:
             randomBlock = random.choice(listOfBlocks)
-            if self.number_of_def(def_grid, randomBlock) < 8:
+            if self.number_of_def( randomBlock) < 8:
                 break
 
-        boxesToFlip = self.TwoRandomBoxesWithinBlock(def_grid, randomBlock)
+        boxesToFlip = self.TwoRandomBoxesWithinBlock( randomBlock)
         proposedSudoku = self.FlipBoxes(sudoku, boxesToFlip)
         return ([proposedSudoku, boxesToFlip])
 
-    def number_of_def(self, def_grid, randomBlock):
+    def number_of_def(self, randomBlock):
         i = 0
         for x in randomBlock:
-            if self.is_def(x, def_grid):
+            if self.is_def(x, ):
                 i += 1
         print(i)
         return i
-    def is_def(self, indexes, def_grid):
-        return bool(def_grid[indexes[0]][indexes[1]])
+    def is_def(self, indexes, ):
+        return bool(self.def_grid[indexes[0]][indexes[1]])
 
-    def ChooseNewState(self, currentSudoku, def_grid, listOfBlocks, sigma):
-        proposal = self.ProposedState(currentSudoku, def_grid, listOfBlocks)
+    def ChooseNewState(self, currentSudoku,  listOfBlocks, sigma):
+        proposal = self.ProposedState(currentSudoku,  listOfBlocks)
         newSudoku = proposal[0]
         boxesToCheck = proposal[1]
         currentCost = self.CalculateNumberOfErrorsRowColumn(boxesToCheck[0][0], boxesToCheck[0][1],
@@ -108,25 +112,25 @@ class Solver:
         return ([currentSudoku, 0])
 
 
-    def ChooseNumberOfItterations(self,def_grid):
+    def ChooseNumberOfItterations(self,):
         numberOfItterations = 0
         for i in range(0, 9):
             for j in range(0, 9):
-                if self.is_def([i, j], def_grid):
+                if self.is_def([i, j], ):
                     numberOfItterations += 1
         return numberOfItterations
 
 
-    def CalculateInitialSigma(self, sudoku, def_grid, listOfBlocks):
+    def CalculateInitialSigma(self, sudoku, listOfBlocks):
         listOfDifferences = []
         tmpSudoku = sudoku
         for i in range(1, 10):
-            tmpSudoku = self.ProposedState(tmpSudoku, def_grid, listOfBlocks)[0]
+            tmpSudoku = self.ProposedState(tmpSudoku,  listOfBlocks)[0]
             listOfDifferences.append(self.CalculateNumberOfErrors(tmpSudoku))
         return (statistics.pstdev(listOfDifferences))
 
 
-    def solveSudoku(self,sudoku, def_grid):
+    def solveSudoku(self,sudoku):
 
         solutionFound = 0
         while (solutionFound == 0):
@@ -135,9 +139,9 @@ class Solver:
             stuckCount = 0
             listOfBlocks = self.CreateList3x3Blocks()
             tmpSudoku = self.RandomlyFill3x3Blocks(sudoku, listOfBlocks)
-            sigma = self.CalculateInitialSigma(sudoku, def_grid, listOfBlocks)
+            sigma = self.CalculateInitialSigma(sudoku, listOfBlocks)
             score = self.CalculateNumberOfErrors(tmpSudoku)
-            itterations = self.ChooseNumberOfItterations(def_grid)
+            itterations = self.ChooseNumberOfItterations()
             if score <= 0:
                 solutionFound = 1
 
@@ -145,7 +149,7 @@ class Solver:
 
                 previousScore = score
                 for i in range(0, itterations):
-                    newState = self.ChooseNewState(tmpSudoku, def_grid, listOfBlocks, sigma)
+                    newState = self.ChooseNewState(tmpSudoku,  listOfBlocks, sigma)
                     tmpSudoku = newState[0]
                     scoreDiff = newState[1]
                     score += scoreDiff
