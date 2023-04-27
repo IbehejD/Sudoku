@@ -10,18 +10,18 @@ class SudokuSolver:
         self.def_grid = def_grid
         self.grid = np.copy(self.def_grid)
 
-    # Cost Function
+    # cost_function
     def get_errors_number(self, grid):
         final_error = 0
         for i in range(0, 9):
             final_error += self.get_row_column_errors(i, i, grid)
         return final_error
-
+    # get numbers of errors in row and column
     def get_row_column_errors(self, row, column, grid):
         row_column_error = (
             9 - len(np.unique(grid[:, column]))) + (9 - len(np.unique(grid[row, :])))
         return row_column_error
-
+    # make blocks with array pointing to grid places
     def get_list_of_blocks(self):
         final_list_of_blocks = []
         for r in range(0, 9):
@@ -33,7 +33,7 @@ class SudokuSolver:
                     tmp_list.append([x, y])
             final_list_of_blocks.append(tmp_list)
         return final_list_of_blocks
-
+    # randomly fill blocks
     def rnd_fill(self, grid, list_of_blocks):
         for block in list_of_blocks:
             for box in block:
@@ -43,13 +43,13 @@ class SudokuSolver:
                     grid[box[0], box[1]] = choice(
                         [i for i in range(1, 10) if i not in curr_block])
         return grid
-
+    # return sum of blocks
     def get_block_sum(self, grid, block):
         final_sum = 0
         for box in block:
             final_sum += grid[box[0], box[1]]
         return final_sum
-
+    #choose two boxes within block
     def get_two_rnd_boxes(self,  block):
         while True:
             first_box = random.choice(block)
@@ -57,7 +57,7 @@ class SudokuSolver:
 
             if not (self.is_def(first_box, )) and not (self.is_def(second_box)):
                 return ([first_box, second_box])
-
+    # flip two boxes within block
     def flip_boxes(self, grid, boxes_to_flip):
         proposed_sudoku = np.copy(grid)
         place_holder = proposed_sudoku[boxes_to_flip[0][0], boxes_to_flip[0][1]]
@@ -65,7 +65,7 @@ class SudokuSolver:
                        ] = proposed_sudoku[boxes_to_flip[1][0], boxes_to_flip[1][1]]
         proposed_sudoku[boxes_to_flip[1][0], boxes_to_flip[1][1]] = place_holder
         return proposed_sudoku
-
+    # return proposed state
     def get_proposed_state(self, grid,  list_of_blocks):
 
         while True:
@@ -76,7 +76,7 @@ class SudokuSolver:
         boxes_to_flip = self.get_two_rnd_boxes(random_block)
         proposed_sudoku = self.flip_boxes(grid, boxes_to_flip)
         return ([proposed_sudoku, boxes_to_flip])
-
+    # redurn number of default numbers in block
     def number_of_def(self, random_block):
         i = 0
         for x in random_block:
@@ -84,10 +84,10 @@ class SudokuSolver:
                 i += 1
         print(i)
         return i
-
+    # return if number is default or not
     def is_def(self, indexes):
         return bool(self.def_grid[indexes[0]][indexes[1]])
-
+    #choose new state
     def choose_new_state(self, current_grid,  list_of_blocks, sigma):
         proposal = self.get_proposed_state(current_grid,  list_of_blocks)
         new_grid = proposal[0]
@@ -105,7 +105,7 @@ class SudokuSolver:
         if (np.random.uniform(1, 0, 1) < rho):
             return ([new_grid, cost_diff])
         return ([current_grid, 0])
-
+    #return itteration number
     def get_itteration_number(self):
         itter_number = 0
         for i in range(0, 9):
@@ -113,7 +113,7 @@ class SudokuSolver:
                 if self.is_def([i, j], ):
                     itter_number += 1
         return itter_number
-
+    #return initial sigma
     def get_initial_sigma(self, grid, list_of_blocks):
         diff_list = []
         tmp_grid = grid
@@ -121,7 +121,7 @@ class SudokuSolver:
             tmp_grid = self.get_proposed_state(tmp_grid,  list_of_blocks)[0]
             diff_list.append(self.get_errors_number(tmp_grid))
         return (statistics.pstdev(diff_list))
-
+    #solve function solving sudoku
     def solve(self):
 
         sol_found = 0
